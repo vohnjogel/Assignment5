@@ -15,7 +15,7 @@ public class Dijkstra {
     public Dijkstra() {
     }
 
-    public static int[][] findShortPaths (String filename) {
+    public static int[][] findShortPaths(String filename) {
         int[][] arr = {{}};
 
         return arr;
