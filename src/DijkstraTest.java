@@ -3,7 +3,7 @@ import java.util.Arrays;
 
 public class DijkstraTest {
     public static void main(String[] args) throws FileNotFoundException {
-        String filename = "src//test1.txt";
+        String filename = "src//test3.txt";
 
         int [][] spt = Dijkstra.findShortPaths(filename);
 

@@ -17,9 +17,11 @@ public class Dijkstra {
         PriorityQueue<Vertex> pq = new PriorityQueue<>();
         Vertex current = vertices.get(0);
 
+        // Initialize source vertex
         pq.add(current);
-        current.setCurrPath(0, -1);
+        current.setCurrPath(0, current.key);
 
+        // Initialize remaining vertices
         for (int i = 1; i < this.nvertices; i++) {
             current = vertices.get(i);
             pq.add(current);
@@ -34,13 +36,14 @@ public class Dijkstra {
         Vertex nextVert;
         Edge edge;
 
+        // Ensure that distances of all adjacent vertices are as short as currently known possible
         for (int i = 0; i < currVert.edges.size(); i++) {
             edge = currVert.edges.get(i);
             nextVert = edge.u;
             newDist = currVert.getDistance() + edge.weight;
 
             if (nextVert.getDistance() < 0 || newDist < nextVert.getDistance()) {
-                nextVert.setCurrPath(newDist, currVert.key);
+                nextVert.setCurrPath(newDist, currVert.key);    // Update shortest path to source
             }
         }
 
@@ -61,6 +64,7 @@ public class Dijkstra {
         return spt;
     }
 
+    // Used in testing, does not provide functionality
     private void printPQ(PriorityQueue<Vertex> pq) {
         System.out.print("{");
 
@@ -81,6 +85,7 @@ public class Dijkstra {
 
         pq = dijkstra.initPQ();
 
+        // Main loop. Selects next closest vertex to tree, adds to tree, and updates distances for adjacent vertices
         while (pq.size() > 0) {
             current = pq.poll();
             pq = dijkstra.updateDistances(current, pq);
