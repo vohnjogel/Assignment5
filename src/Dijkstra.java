@@ -15,6 +15,12 @@ public class Dijkstra {
     public Dijkstra() {
     }
 
+    public static int[][] findShortPaths (String filename) {
+        int[][] arr = {{}};
+
+        return arr;
+    }
+
     void readfile_graph(String filename) throws FileNotFoundException {
         int x,y;
         //read the input
