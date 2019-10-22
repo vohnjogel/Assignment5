@@ -16,18 +16,35 @@ public class Dijkstra {
     public Dijkstra() {
     }
 
+    private PriorityQueue<Vertex> initPQ() {
+        PriorityQueue<Vertex> pq = new PriorityQueue<>();
+        Vertex current = vertices.get(0);
+
+        pq.add(current);
+        current.setCurrPath(0, -1);
+
+        for (int i = 1; i < this.nvertices; i++) {
+            current = vertices.get(i);
+            pq.add(current);
+            current.setCurrPath(-1, -1);
+        }
+
+        return pq;
+    }
+
     public static int[][] findShortPaths(String filename) throws FileNotFoundException {
         int[][] spt = {{}};
         Dijkstra dijkstra = new Dijkstra();
-        PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>();
+        PriorityQueue<Vertex> pq;
 
         dijkstra.readfile_graph(filename);
+        pq = dijkstra.initPQ();
 
         return spt;
     }
 
     void readfile_graph(String filename) throws FileNotFoundException {
-        int x,y;
+        int x,y, weight;
         //read the input
         FileInputStream in = new FileInputStream(new File(filename));
         Scanner sc = new Scanner(in);
@@ -45,8 +62,9 @@ public class Dijkstra {
             // System.out.println(i + " compare " + (i<=nedges) + " nedges " + nedges);
             x=sc.nextInt();
             y=sc.nextInt();
+            weight = sc.nextInt();
             //  System.out.println("x  " + x + "  y:  " + y  + " i " + i);
-            insert_edge(x,y,directed);
+            insert_edge(x,y, weight, directed);
         }
         // order edges to make it easier to see what is going on
         for(int i=0;i<=nvertices-1;i++)	{
@@ -94,13 +112,15 @@ public class Dijkstra {
         return -1;
     }
 
-    void insert_edge(int x, int y, boolean directed) 	{
+    void insert_edge(int x, int y, int weight, boolean directed) 	{
         Vertex one = vertices.get(x-1);
         Vertex two = vertices.get(y-1);
-        one.edges.add(two);
+        Edge edge = new Edge(one, two, weight);
+        one.edges.add(edge);
+
         vertices.get(x-1).degree++;
         if(!directed)
-            insert_edge(y,x,true);
+            insert_edge(y,x, weight, true);
         else
             nedges++;
     }
@@ -114,8 +134,10 @@ public class Dijkstra {
     void print_graph()	{
         for(Vertex v : vertices)	{
             System.out.println("vertex: "  + v.key);
-            for(Vertex w : v.edges)
-                System.out.print("  adjacency list: " + w.key);
+//            for (int i = 0; i < v.degree; i++)
+//                System.out.print("  adjacency list: " + v.edges.get(i).key + " (" + v.edgeWeights.get(i) + ")");
+            for(Edge e : v.edges)
+                System.out.print("  adjacency list: " + e.u.key + " (" + e.weight + ")");
             System.out.println();
         }
     }
@@ -130,7 +152,8 @@ public class Dijkstra {
         int entry_time = 0;
         int exit_time = 0;
         Vertex parent = null;
-        ArrayList<Vertex> edges = new ArrayList<Vertex>();
+        ArrayList<Edge> edges = new ArrayList<Edge>();
+        int[] currPath = new int[2];    // (distance to subtree, vertex back to current known SPT)
 
         public Vertex(int tkey){
             key = tkey;
@@ -142,6 +165,31 @@ public class Dijkstra {
                 return -1;
             }
             else
+                return 0;
+        }
+
+        private void setCurrPath(int distance, int prevVert) {
+            this.currPath[0] = distance;
+            this.currPath[1] = prevVert;
+        }
+    }
+
+    class Edge implements Comparable<Edge> {
+        Vertex v, u;
+        int weight;
+
+        public Edge(Vertex v, Vertex u, int weight) {
+            this.v = v;
+            this.u = u;
+            this.weight = weight;
+        }
+
+        public int compareTo(Edge other) {
+            if (this.weight > other.weight) {
+                return 1;
+            } else if (this.weight < other.weight) {
+                return -1;
+            } else
                 return 0;
         }
     }
