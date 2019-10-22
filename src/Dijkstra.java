@@ -48,8 +48,22 @@ public class Dijkstra {
         }
     }
 
+    private int[][] fillPathInfo() {
+        int[][] spt = new int[this.nvertices][3];
+        Vertex currVert;
+
+        for (int i = 0; i < this.nvertices; i++) {
+            currVert = this.vertices.get(i);
+            spt[i][0] = i;
+            spt[i][1] = currVert.getDistance();
+            spt[i][2] = currVert.getPrev();
+        }
+
+        return spt;
+    }
+
     public static int[][] findShortPaths(String filename) throws FileNotFoundException {
-        int[][] spt = {{}};
+        int[][] spt;
         Dijkstra dijkstra = new Dijkstra();
         PriorityQueue<Vertex> pq;
         Vertex current;
@@ -62,6 +76,8 @@ public class Dijkstra {
             current = pq.poll();
             dijkstra.updateDistances(current);
         }
+
+        spt = dijkstra.fillPathInfo();
 
         return spt;
     }
@@ -198,6 +214,10 @@ public class Dijkstra {
 
         private int getDistance() {
             return this.currPath[0];
+        }
+
+        private int getPrev() {
+            return this.currPath[1];
         }
     }
 
