@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Dijkstra {
@@ -15,10 +16,14 @@ public class Dijkstra {
     public Dijkstra() {
     }
 
-    public static int[][] findShortPaths(String filename) {
-        int[][] arr = {{}};
+    public static int[][] findShortPaths(String filename) throws FileNotFoundException {
+        int[][] spt = {{}};
+        Dijkstra dijkstra = new Dijkstra();
+        PriorityQueue<Vertex> pq = new PriorityQueue<Vertex>();
 
-        return arr;
+        dijkstra.readfile_graph(filename);
+
+        return spt;
     }
 
     void readfile_graph(String filename) throws FileNotFoundException {
