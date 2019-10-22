@@ -32,13 +32,36 @@ public class Dijkstra {
         return pq;
     }
 
+    private void updateDistances(Vertex currVert) {
+        int newDist;
+        Vertex nextVert;
+        Edge edge;
+
+        for (int i = 0; i < currVert.edges.size(); i++) {
+            edge = currVert.edges.get(i);
+            nextVert = edge.u;
+            newDist = currVert.getDistance() + edge.weight;
+
+            if (newDist < nextVert.getDistance()) {
+                nextVert.setCurrPath(newDist, currVert.key);
+            }
+        }
+    }
+
     public static int[][] findShortPaths(String filename) throws FileNotFoundException {
         int[][] spt = {{}};
         Dijkstra dijkstra = new Dijkstra();
         PriorityQueue<Vertex> pq;
+        Vertex current;
 
         dijkstra.readfile_graph(filename);
+
         pq = dijkstra.initPQ();
+
+        while (pq.size() > 0) {
+            current = pq.poll();
+            dijkstra.updateDistances(current);
+        }
 
         return spt;
     }
@@ -171,6 +194,10 @@ public class Dijkstra {
         private void setCurrPath(int distance, int prevVert) {
             this.currPath[0] = distance;
             this.currPath[1] = prevVert;
+        }
+
+        private int getDistance() {
+            return this.currPath[0];
         }
     }
 
