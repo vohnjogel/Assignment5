@@ -1,10 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.util.*;
 
 public class Dijkstra {
     ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -32,7 +29,7 @@ public class Dijkstra {
         return pq;
     }
 
-    private void updateDistances(Vertex currVert) {
+    private PriorityQueue<Vertex> updateDistances(Vertex currVert, PriorityQueue<Vertex> pq) {
         int newDist;
         Vertex nextVert;
         Edge edge;
@@ -42,10 +39,12 @@ public class Dijkstra {
             nextVert = edge.u;
             newDist = currVert.getDistance() + edge.weight;
 
-            if (newDist < nextVert.getDistance()) {
+            if (nextVert.getDistance() < 0 || newDist < nextVert.getDistance()) {
                 nextVert.setCurrPath(newDist, currVert.key);
             }
         }
+
+        return pq;
     }
 
     private int[][] fillPathInfo() {
@@ -54,12 +53,22 @@ public class Dijkstra {
 
         for (int i = 0; i < this.nvertices; i++) {
             currVert = this.vertices.get(i);
-            spt[i][0] = i;
+            spt[i][0] = currVert.key;
             spt[i][1] = currVert.getDistance();
             spt[i][2] = currVert.getPrev();
         }
 
         return spt;
+    }
+
+    private void printPQ(PriorityQueue<Vertex> pq) {
+        System.out.print("{");
+
+        for (Vertex v : pq) {
+            System.out.print(v.key + "(" + v.getDistance() + ", " + v.getPrev() + "), ");
+        }
+
+        System.out.println("}");
     }
 
     public static int[][] findShortPaths(String filename) throws FileNotFoundException {
@@ -74,7 +83,7 @@ public class Dijkstra {
 
         while (pq.size() > 0) {
             current = pq.poll();
-            dijkstra.updateDistances(current);
+            pq = dijkstra.updateDistances(current, pq);
         }
 
         spt = dijkstra.fillPathInfo();
