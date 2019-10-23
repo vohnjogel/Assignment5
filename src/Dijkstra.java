@@ -25,7 +25,7 @@ public class Dijkstra {
         for (int i = 1; i < this.nvertices; i++) {
             current = vertices.get(i);
             pq.add(current);
-            current.setCurrPath(-1, -1);
+            current.setCurrPath(Integer.MAX_VALUE / 2, -1);
         }
 
         return pq;
@@ -42,8 +42,10 @@ public class Dijkstra {
             nextVert = edge.u;
             newDist = currVert.getDistance() + edge.weight;
 
-            if (nextVert.getDistance() < 0 || newDist < nextVert.getDistance()) {
+            if (/*nextVert.getDistance() < 0 ||*/ newDist < nextVert.getDistance()) {
                 nextVert.setCurrPath(newDist, currVert.key);    // Update shortest path to source
+                pq.remove(nextVert);
+                pq.add(nextVert);
             }
         }
 
